@@ -1,7 +1,7 @@
-import { config } from 'dotenv';
-
+require('dotenv').config();
 import { storeNameItemsInMarkDown, storeNameItemsInJSON } from './service';
-config()(async () => {
+
+(async () => {
   await Promise.all([
     storeNameItemsInMarkDown('names'),
     storeNameItemsInJSON('names'),

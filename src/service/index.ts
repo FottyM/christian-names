@@ -26,7 +26,6 @@ export async function storeNameItemsInJSON(fileName: string) {
 }
 
 export async function storeNameItemsInMarkDown(fileName: string) {
-
   const items = await fetchAllStrippedNameItems();
 
   const stream = await fs.createWriteStream(
