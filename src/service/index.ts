@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import json2md from 'json2md';
+import * as path from 'path';
 
 import { fetchAllChunks } from '../repository';
 import { stripItem } from '../repository/helpers';
@@ -25,13 +25,40 @@ export async function storeNameItemsInJSON(fileName: string) {
   stream.end();
 }
 
-export async function storeNameItemsInMarkDown(fileName: string) {
-  const items = await fetchAllStrippedNameItems();
-
+export async function storeNameItemsInMarkDown(
+  fileName: string,
+  filterBy?: string
+) {
+  const items: StrippedNameItem[] = await fetchAllStrippedNameItems();
   const stream = await fs.createWriteStream(
     path.join(BASE_FOLDER, fileName + '.md')
   );
 
-  stream.write(json2md(items));
+  if (!items.length) return;
+
+  const headers = ['name', 'pronunciation', 'meaning', 'detail', 'origin'];
+  const title = `Hebrews and Christian names ${filterBy ? `ending with ${filterBy}` : ''}`
+  
+  stream.write(
+    json2md([
+      { h1: title},
+      {
+        table: {
+          headers,
+          rows: items
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .filter(item => (filterBy ? item.name.endsWith(filterBy) : true))
+            .map(item => [
+              item.name,
+              item.pronunciation,
+              item.meaning,
+              item.detail,
+              item.origin,
+            ]),
+        },
+      },
+    ])
+  );
+
   stream.end();
 }
