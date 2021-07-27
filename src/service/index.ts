@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import json2md from 'json2md';
+
 import { fetchAllChunks } from '../repository';
 import { stripItem } from '../repository/helpers';
 import { StrippedNameItem } from '../repository/types';
@@ -24,17 +26,13 @@ export async function storeNameItemsInJSON(fileName: string) {
 }
 
 export async function storeNameItemsInMarkDown(fileName: string) {
+
   const items = await fetchAllStrippedNameItems();
+
   const stream = await fs.createWriteStream(
     path.join(BASE_FOLDER, fileName + '.md')
   );
-  stream.write(`## List of Christian names \n\n`);
-  stream.write(`| Name | Meaning | Origin | Pronunciation | Detail |\n`);
-  stream.write(`| ---- | ------- | ------ | ------------- | ------ |\n`);
-  for (const item of items) {
-    stream.write(
-      `| ${item.name} | ${item.meaning} | ${item.origin} | ${item.pronunciation} | ${item.detail} |\n`
-    );
-  }
+
+  stream.write(json2md(items));
   stream.end();
 }

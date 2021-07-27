@@ -1,9 +1,7 @@
 import got, { Response } from 'got';
 import sleep from '../utils/sleep';
-import {LIMIT, OFFSET, ORDER, SORT_BY } from './constants';
+import { LIMIT, OFFSET, ORDER, SORT_BY } from './constants';
 import { ApiResponse, MapperFn, NameItem, StrippedNameItem } from './types';
-
-
 
 const fetchNameItems = async (
   offset = OFFSET,
@@ -12,7 +10,7 @@ const fetchNameItems = async (
   sortBy = SORT_BY
 ): Promise<NameItem[]> => {
   const BASE_URI = process.env.BASE_URI;
-  
+
   if (!BASE_URI) throw new Error('BASE_UI is not defined');
 
   const { body }: Response<ApiResponse> = await got(BASE_URI, {
